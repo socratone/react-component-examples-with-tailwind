@@ -6,11 +6,7 @@ import ChipAdder from './components/ChipAdder';
 const Page = () => {
   const [chips, setChips] = useState<string[]>([]);
 
-  return (
-    <div className="m-8">
-      <ChipAdder value={chips} onChange={setChips} />
-    </div>
-  );
+  return <ChipAdder value={chips} onChange={setChips} />;
 };
 
 export default Page;
