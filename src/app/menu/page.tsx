@@ -19,7 +19,7 @@ const Page = () => {
           {
             label: '메뉴 2',
             onClick: () => {
-              setClickedMenu('메뉴 2'); //
+              setClickedMenu('메뉴 2');
             },
           },
         ]}
