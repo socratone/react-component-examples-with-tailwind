@@ -26,12 +26,17 @@ const ChipAdder = ({ value, onChange }: ChipAdderProps) => {
     setInputValue(event.target.value);
   };
 
+  const handleChipClick = (clickedIndex: number) => {
+    onChange(value.filter((_, index) => index !== clickedIndex));
+  };
+
   return (
     <div className="border-2 border-black whitespace-pre-wrap text-lg p-1 flex gap-1 flex-wrap">
       {chips.map((chip, index) => (
         <span
           key={index}
-          className="bg-slate-400 text-white rounded p-1 inline-block"
+          className="bg-slate-400 text-white rounded p-1 inline-block cursor-pointer"
+          onClick={() => handleChipClick(index)}
         >
           {chip}
         </span>
