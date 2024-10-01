@@ -72,34 +72,34 @@ const DraggableBottomSheet = ({
    * 마우스 이동에 따라 top 업데이트 (desktop)
    */
   const throttledMouseMove = useCallback((event: MouseEvent) => {
-    const updatePosition = () => {
-      if (!sheetRef.current) return;
-      if (typeof dragOffsetY.current !== 'number') return;
-
-      const newTop = event.clientY - dragOffsetY.current;
-
-      // viewport 위로 넘어가지 않도록
-      if (newTop < 0) {
-        topRef.current = 0;
-        sheetRef.current.style.top = `${topRef.current}px`;
-        return;
-      }
-
-      // viewport 아래로 내려가지 않도록
-      if (newTop > window.innerHeight - OFFSET_MARGIN) {
-        topRef.current = window.innerHeight - OFFSET_MARGIN;
-        sheetRef.current.style.top = `${topRef.current}px`;
-        return;
-      }
-
-      topRef.current = newTop;
-      sheetRef.current.style.top = `${topRef.current}px`;
-
-      // requestAnimationFrame 요청이 종료되면 다음 요청을 위해 초기화
-      animationFrameIdRef.current = null;
-    };
-
     if (!animationFrameIdRef.current) {
+      const updatePosition = () => {
+        if (!sheetRef.current) return;
+        if (typeof dragOffsetY.current !== 'number') return;
+
+        const newTop = event.clientY - dragOffsetY.current;
+
+        // viewport 위로 넘어가지 않도록
+        if (newTop < 0) {
+          topRef.current = 0;
+          sheetRef.current.style.top = `${topRef.current}px`;
+          return;
+        }
+
+        // viewport 아래로 내려가지 않도록
+        if (newTop > window.innerHeight - OFFSET_MARGIN) {
+          topRef.current = window.innerHeight - OFFSET_MARGIN;
+          sheetRef.current.style.top = `${topRef.current}px`;
+          return;
+        }
+
+        topRef.current = newTop;
+        sheetRef.current.style.top = `${topRef.current}px`;
+
+        // requestAnimationFrame 요청이 종료되면 다음 요청을 위해 초기화
+        animationFrameIdRef.current = null;
+      };
+
       // requestAnimationFrame으로 DOM 업데이트
       animationFrameIdRef.current = requestAnimationFrame(updatePosition);
     }
@@ -140,35 +140,35 @@ const DraggableBottomSheet = ({
    * 터치 이동에 따라 top 업데이트 (mobile)
    */
   const throttledTouchMove = useCallback((event: TouchEvent) => {
-    const updatePosition = () => {
-      if (!sheetRef.current) return;
-      if (typeof dragOffsetY.current !== 'number') return;
-
-      const touchY = event.touches[0].clientY;
-      const newTop = touchY - dragOffsetY.current;
-
-      // viewport 위로 넘어가지 않도록
-      if (newTop < 0) {
-        topRef.current = 0;
-        sheetRef.current.style.top = `${topRef.current}px`;
-        return;
-      }
-
-      // viewport 아래로 내려가지 않도록
-      if (newTop > window.innerHeight - OFFSET_MARGIN) {
-        topRef.current = window.innerHeight - OFFSET_MARGIN;
-        sheetRef.current.style.top = `${topRef.current}px`;
-        return;
-      }
-
-      topRef.current = newTop;
-      sheetRef.current.style.top = `${topRef.current}px`;
-
-      // requestAnimationFrame 요청이 종료되면 다음 요청을 위해 초기화
-      animationFrameIdRef.current = null;
-    };
-
     if (!animationFrameIdRef.current) {
+      const updatePosition = () => {
+        if (!sheetRef.current) return;
+        if (typeof dragOffsetY.current !== 'number') return;
+
+        const touchY = event.touches[0].clientY;
+        const newTop = touchY - dragOffsetY.current;
+
+        // viewport 위로 넘어가지 않도록
+        if (newTop < 0) {
+          topRef.current = 0;
+          sheetRef.current.style.top = `${topRef.current}px`;
+          return;
+        }
+
+        // viewport 아래로 내려가지 않도록
+        if (newTop > window.innerHeight - OFFSET_MARGIN) {
+          topRef.current = window.innerHeight - OFFSET_MARGIN;
+          sheetRef.current.style.top = `${topRef.current}px`;
+          return;
+        }
+
+        topRef.current = newTop;
+        sheetRef.current.style.top = `${topRef.current}px`;
+
+        // requestAnimationFrame 요청이 종료되면 다음 요청을 위해 초기화
+        animationFrameIdRef.current = null;
+      };
+
       // requestAnimationFrame으로 DOM 업데이트
       animationFrameIdRef.current = requestAnimationFrame(updatePosition);
     }
