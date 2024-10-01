@@ -45,7 +45,7 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
   }, [open]);
 
   /**
-   * 마우스 이동에 따라 top 업데이트
+   * 마우스 이동에 따라 top 업데이트 (desktop)
    */
   const throttledMouseMove = useCallback(
     throttle((event: MouseEvent) => {
@@ -74,7 +74,7 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
   );
 
   /**
-   * 드래그 종료
+   * 드래그 종료 (desktop)
    */
   const handleMouseUp = useCallback(() => {
     dragStartY.current = null;
@@ -85,7 +85,7 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
   }, []);
 
   /**
-   * 드래그 시작
+   * 드래그 시작 (desktop)
    */
   const handleMouseDown = (event: React.MouseEvent) => {
     // 드래그 시작 지점 기록
@@ -94,6 +94,61 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
 
     window.addEventListener('mousemove', throttledMouseMove); // window에서 mousemove 감지
     window.addEventListener('mouseup', handleMouseUp); // window에서 mouseup 감지
+  };
+
+  /**
+   * 터치 이동에 따라 top 업데이트 (mobile)
+   */
+  const throttledTouchMove = useCallback(
+    throttle((event: TouchEvent) => {
+      if (typeof dragOffsetY.current === 'number') {
+        const touchY = event.touches[0].clientY;
+        const newTop = touchY - dragOffsetY.current;
+
+        // viewport 위로 넘어가지 않도록
+        if (newTop < 0) {
+          setTop(0);
+          topRef.current = 0;
+          return;
+        }
+
+        // viewport 아래로 내려가지 않도록
+        if (newTop > window.innerHeight - DRAGGABLE_BUTTON_HEIGHT) {
+          setTop(window.innerHeight - DRAGGABLE_BUTTON_HEIGHT);
+          topRef.current = window.innerHeight - DRAGGABLE_BUTTON_HEIGHT;
+          return;
+        }
+
+        setTop(newTop);
+        topRef.current = newTop;
+      }
+    }, 50),
+    []
+  );
+
+  /**
+   * 터치 종료 (mobile)
+   */
+  const handleTouchEnd = useCallback(() => {
+    dragStartY.current = null;
+    dragOffsetY.current = null;
+
+    window.removeEventListener('touchmove', throttledTouchMove);
+    window.removeEventListener('touchend', handleTouchEnd);
+  }, []);
+
+  /**
+   * 터치 시작 (mobile)
+   */
+  const handleTouchStart = (event: React.TouchEvent) => {
+    const touchY = event.touches[0].clientY;
+
+    // 드래그 시작 지점 기록
+    dragStartY.current = touchY;
+    dragOffsetY.current = touchY - top;
+
+    window.addEventListener('touchmove', throttledTouchMove);
+    window.addEventListener('touchend', handleTouchEnd);
   };
 
   if (!isVisible) return null;
@@ -120,6 +175,7 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
         <button
           className="w-full bg-gray-200 rounded-t-3xl cursor-grab block"
           onMouseDown={handleMouseDown}
+          onTouchStart={handleTouchStart}
           style={{ height: DRAGGABLE_BUTTON_HEIGHT }}
         />
         <div className="px-6 h-full">{children}</div>
