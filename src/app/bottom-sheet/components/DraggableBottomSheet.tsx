@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import './bottom-sheet-animation.css';
 import throttle from 'lodash/throttle';
 
-interface BottomSheetProps {
+interface DraggableBottomSheetProps {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
@@ -12,12 +12,12 @@ interface BottomSheetProps {
 
 const OFFSET_MARGIN = 48;
 
-const BottomSheet = ({
+const DraggableBottomSheet = ({
   open,
   onClose,
   children,
   initialTop,
-}: BottomSheetProps) => {
+}: DraggableBottomSheetProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [containerAnimation, setContainerAnimation] = useState<string>();
   const [backdropAnimation, setBackdropAnimation] = useState<string>();
@@ -216,4 +216,4 @@ const BottomSheet = ({
   );
 };
 
-export default BottomSheet;
+export default DraggableBottomSheet;
