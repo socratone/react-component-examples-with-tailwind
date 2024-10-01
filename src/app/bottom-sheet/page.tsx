@@ -10,7 +10,7 @@ const Page = () => {
     <>
       <button onClick={() => setOpen(true)}>열기</button>
 
-      <BottomSheet open={open} onClose={() => setOpen(false)}>
+      <BottomSheet open={open} onClose={() => setOpen(false)} initialTop={400}>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
         voluptas distinctio earum, voluptatem ad ex quae architecto quasi vitae
         velit adipisci incidunt ducimus odio, cum deleniti alias, iusto autem.

@@ -7,17 +7,24 @@ interface BottomSheetProps {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  initialTop: number;
 }
 
-const DRAGGABLE_BUTTON_HEIGHT = 48;
+const OFFSET_MARGIN = 48;
 
-const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
+const BottomSheet = ({
+  open,
+  onClose,
+  children,
+  initialTop,
+}: BottomSheetProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [containerAnimation, setContainerAnimation] = useState<string>();
   const [backdropAnimation, setBackdropAnimation] = useState<string>();
 
-  const [top, setTop] = useState(400);
-  const topRef = useRef(400);
+  const sheetRef = useRef<HTMLDivElement>(null);
+
+  const topRef = useRef(0);
   const dragStartY = useRef<number | null>(null); // 드래그 시작 위치
   const dragOffsetY = useRef<number | null>(null); // top과 클릭 위치 offset
 
@@ -64,25 +71,27 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
    */
   const throttledMouseMove = useCallback(
     throttle((event: MouseEvent) => {
+      if (!sheetRef.current) return;
+
       if (typeof dragOffsetY.current === 'number') {
         const newTop = event.clientY - dragOffsetY.current;
 
         // viewport 위로 넘어가지 않도록
         if (newTop < 0) {
-          setTop(0);
           topRef.current = 0;
+          sheetRef.current.style.top = `${topRef.current}px`;
           return;
         }
 
         // viewport 아래로 내려가지 않도록
-        if (newTop > window.innerHeight - DRAGGABLE_BUTTON_HEIGHT) {
-          setTop(window.innerHeight - DRAGGABLE_BUTTON_HEIGHT);
-          topRef.current = window.innerHeight - DRAGGABLE_BUTTON_HEIGHT;
+        if (newTop > window.innerHeight - OFFSET_MARGIN) {
+          topRef.current = window.innerHeight - OFFSET_MARGIN;
+          sheetRef.current.style.top = `${topRef.current}px`;
           return;
         }
 
-        setTop(newTop);
         topRef.current = newTop;
+        sheetRef.current.style.top = `${topRef.current}px`;
       }
     }, 50),
     []
@@ -103,9 +112,11 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
    * 드래그 시작 (desktop)
    */
   const handleMouseDown = (event: React.MouseEvent) => {
+    topRef.current = parseInt(sheetRef.current?.style.top ?? '');
+
     // 드래그 시작 지점 기록
     dragStartY.current = event.clientY;
-    dragOffsetY.current = event.clientY - top;
+    dragOffsetY.current = event.clientY - topRef.current;
 
     window.addEventListener('mousemove', throttledMouseMove); // window에서 mousemove 감지
     window.addEventListener('mouseup', handleMouseUp); // window에서 mouseup 감지
@@ -116,26 +127,28 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
    */
   const throttledTouchMove = useCallback(
     throttle((event: TouchEvent) => {
+      if (!sheetRef.current) return;
+
       if (typeof dragOffsetY.current === 'number') {
         const touchY = event.touches[0].clientY;
         const newTop = touchY - dragOffsetY.current;
 
         // viewport 위로 넘어가지 않도록
         if (newTop < 0) {
-          setTop(0);
           topRef.current = 0;
+          sheetRef.current.style.top = `${topRef.current}px`;
           return;
         }
 
         // viewport 아래로 내려가지 않도록
-        if (newTop > window.innerHeight - DRAGGABLE_BUTTON_HEIGHT) {
-          setTop(window.innerHeight - DRAGGABLE_BUTTON_HEIGHT);
-          topRef.current = window.innerHeight - DRAGGABLE_BUTTON_HEIGHT;
+        if (newTop > window.innerHeight - OFFSET_MARGIN) {
+          topRef.current = window.innerHeight - OFFSET_MARGIN;
+          sheetRef.current.style.top = `${topRef.current}px`;
           return;
         }
 
-        setTop(newTop);
         topRef.current = newTop;
+        sheetRef.current.style.top = `${topRef.current}px`;
       }
     }, 50),
     []
@@ -156,11 +169,13 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
    * 터치 시작 (mobile)
    */
   const handleTouchStart = (event: React.TouchEvent) => {
+    topRef.current = parseInt(sheetRef.current?.style.top ?? '');
+
     const touchY = event.touches[0].clientY;
 
     // 드래그 시작 지점 기록
     dragStartY.current = touchY;
-    dragOffsetY.current = touchY - top;
+    dragOffsetY.current = touchY - topRef.current;
 
     window.addEventListener('touchmove', throttledTouchMove);
     window.addEventListener('touchend', handleTouchEnd);
@@ -179,10 +194,11 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
 
       {/* Bottom Sheet */}
       <div
+        ref={sheetRef}
         className="fixed bottom-0 inset-x-0 bg-white rounded-t-3xl shadow-lg"
         style={{
+          top: initialTop,
           animation: containerAnimation,
-          top,
           transition: 'top 0.08s linear',
         }}
       >
@@ -191,7 +207,7 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
           className="w-full bg-gray-200 rounded-t-3xl cursor-grab block"
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
-          style={{ height: DRAGGABLE_BUTTON_HEIGHT }}
+          style={{ height: OFFSET_MARGIN }}
         />
         <div className="px-6 h-full">{children}</div>
       </div>
