@@ -12,7 +12,7 @@ const Menu = ({ items }: MenuProps) => {
   const [open, setOpen] = useState(false);
 
   /** 메뉴 바깥 영역을 클릭했을 때 메뉴를 닫기 위한 함수 */
-  const handleClickOutside = (event: MouseEvent) => {
+  const handleOutsideClick = (event: MouseEvent) => {
     if (
       menuListRef.current &&
       // 클릭된 요소가 해당 메뉴 안에 포함되지 않는 경우
@@ -24,11 +24,11 @@ const Menu = ({ items }: MenuProps) => {
 
   useEffect(() => {
     // 컴포넌트가 마운트될 때 document에 마우스 다운 이벤트 리스너를 추가하여
-    // handleClickOutside 함수를 호출하게 함
-    document.addEventListener('mousedown', handleClickOutside);
+    // handleOutsideClick 함수를 호출하게 함
+    document.addEventListener('mousedown', handleOutsideClick);
     return () => {
       // 컴포넌트가 언마운트될 때 이벤트 리스너를 제거하여 메모리 누수를 방지
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('mousedown', handleOutsideClick);
     };
   }, []);
 
