@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import './bottom-sheet-animation.css';
+import throttle from 'lodash/throttle';
 
 interface BottomSheetProps {
   open: boolean;
@@ -8,10 +9,17 @@ interface BottomSheetProps {
   children: React.ReactNode;
 }
 
+const DRAGGABLE_BUTTON_HEIGHT = 48;
+
 const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [containerAnimation, setContainerAnimation] = useState<string>();
   const [backdropAnimation, setBackdropAnimation] = useState<string>();
+
+  const [top, setTop] = useState(400);
+  const topRef = useRef(400);
+  const dragStartY = useRef<number | null>(null); // 드래그 시작 위치
+  const dragOffsetY = useRef<number | null>(null); // top과 클릭 위치 offset
 
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -36,6 +44,58 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
     };
   }, [open]);
 
+  /**
+   * 마우스 이동에 따라 top 업데이트
+   */
+  const throttledMouseMove = useCallback(
+    throttle((event: MouseEvent) => {
+      if (typeof dragOffsetY.current === 'number') {
+        const newTop = event.clientY - dragOffsetY.current;
+
+        // viewport 위로 넘어가지 않도록
+        if (newTop < 0) {
+          setTop(0);
+          topRef.current = 0;
+          return;
+        }
+
+        // viewport 아래로 내려가지 않도록
+        if (newTop > window.innerHeight - DRAGGABLE_BUTTON_HEIGHT) {
+          setTop(window.innerHeight - DRAGGABLE_BUTTON_HEIGHT);
+          topRef.current = window.innerHeight - DRAGGABLE_BUTTON_HEIGHT;
+          return;
+        }
+
+        setTop(newTop);
+        topRef.current = newTop;
+      }
+    }, 50),
+    []
+  );
+
+  /**
+   * 드래그 종료
+   */
+  const handleMouseUp = useCallback(() => {
+    dragStartY.current = null;
+    dragOffsetY.current = null;
+
+    window.removeEventListener('mousemove', throttledMouseMove); // mousemove 이벤트 해제
+    window.removeEventListener('mouseup', handleMouseUp); // mouseup 이벤트 해제
+  }, []);
+
+  /**
+   * 드래그 시작
+   */
+  const handleMouseDown = (event: React.MouseEvent) => {
+    // 드래그 시작 지점 기록
+    dragStartY.current = event.clientY;
+    dragOffsetY.current = event.clientY - top;
+
+    window.addEventListener('mousemove', throttledMouseMove); // window에서 mousemove 감지
+    window.addEventListener('mouseup', handleMouseUp); // window에서 mouseup 감지
+  };
+
   if (!isVisible) return null;
 
   return createPortal(
@@ -49,10 +109,20 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
 
       {/* Bottom Sheet */}
       <div
-        className="fixed bottom-0 inset-x-0 bg-white p-6 rounded-t-3xl shadow-lg"
-        style={{ animation: containerAnimation }}
+        className="fixed bottom-0 inset-x-0 bg-white rounded-t-3xl shadow-lg"
+        style={{
+          animation: containerAnimation,
+          top,
+          transition: 'top 0.3s ease-out',
+        }}
       >
-        {children}
+        {/* Draggable Button */}
+        <button
+          className="w-full bg-gray-200 rounded-t-3xl cursor-grab block"
+          onMouseDown={handleMouseDown}
+          style={{ height: DRAGGABLE_BUTTON_HEIGHT }}
+        />
+        <div className="px-6 h-full">{children}</div>
       </div>
     </>,
     document.body
