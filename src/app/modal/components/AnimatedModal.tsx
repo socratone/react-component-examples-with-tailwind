@@ -41,7 +41,7 @@ const AnimatedModal = ({
 
   if (!isVisible) return null;
 
-  const backDropClassName =
+  const backdropClassName =
     'fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50';
 
   const modalContainerClassName =
@@ -49,7 +49,7 @@ const AnimatedModal = ({
 
   return createPortal(
     <div
-      className={backDropClassName}
+      className={backdropClassName}
       onClick={onClose}
       style={{
         animation,

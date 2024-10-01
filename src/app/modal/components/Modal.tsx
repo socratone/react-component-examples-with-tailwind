@@ -10,14 +10,14 @@ interface ModalProps {
 const Modal = ({ open, onClose, children, maxWidth }: ModalProps) => {
   if (!open) return null;
 
-  const backDropClassName =
+  const backdropClassName =
     'fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50';
 
   const modalContainerClassName =
     'bg-white p-6 rounded-lg shadow-lg relative w-full overflow-y-auto m-[40px]';
 
   return createPortal(
-    <div className={backDropClassName} onClick={onClose}>
+    <div className={backdropClassName} onClick={onClose}>
       <div
         className={modalContainerClassName}
         style={{ maxHeight: 'calc(100vh - 80px)', maxWidth }}
