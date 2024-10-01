@@ -5,6 +5,7 @@ export default function Home() {
     <main className="flex flex-col items-center justify-between">
       <Link href="/text-input-with-chips">Text Input With Chips</Link>
       <Link href="/menu">Menu</Link>
+      <Link href="/modal">Modal</Link>
     </main>
   );
 }
