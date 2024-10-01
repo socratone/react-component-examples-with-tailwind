@@ -27,6 +27,9 @@ const DraggableBottomSheet = ({
   const dragStartY = useRef<number | null>(null); // 드래그 시작 위치
   const dragOffsetY = useRef<number | null>(null); // top과 클릭 위치 offset
 
+  // requestAnimationFrame ID 저장을 위한 ref
+  const animationFrameIdRef = useRef<number | null>(null);
+
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
@@ -91,10 +94,15 @@ const DraggableBottomSheet = ({
 
       topRef.current = newTop;
       sheetRef.current.style.top = `${topRef.current}px`;
+
+      // requestAnimationFrame 요청이 종료되면 다음 요청을 위해 초기화
+      animationFrameIdRef.current = null;
     };
 
-    // requestAnimationFrame으로 DOM 업데이트
-    requestAnimationFrame(updatePosition);
+    if (!animationFrameIdRef.current) {
+      // requestAnimationFrame으로 DOM 업데이트
+      animationFrameIdRef.current = requestAnimationFrame(updatePosition);
+    }
   }, []);
 
   /**
@@ -106,6 +114,12 @@ const DraggableBottomSheet = ({
 
     window.removeEventListener('mousemove', throttledMouseMove); // mousemove 이벤트 해제
     window.removeEventListener('mouseup', handleMouseUp); // mouseup 이벤트 해제
+
+    // 애니메이션 프레임 취소
+    if (animationFrameIdRef.current) {
+      cancelAnimationFrame(animationFrameIdRef.current);
+      animationFrameIdRef.current = null;
+    }
   }, []);
 
   /**
@@ -149,10 +163,15 @@ const DraggableBottomSheet = ({
 
       topRef.current = newTop;
       sheetRef.current.style.top = `${topRef.current}px`;
+
+      // requestAnimationFrame 요청이 종료되면 다음 요청을 위해 초기화
+      animationFrameIdRef.current = null;
     };
 
-    // requestAnimationFrame으로 DOM 업데이트
-    requestAnimationFrame(updatePosition);
+    if (!animationFrameIdRef.current) {
+      // requestAnimationFrame으로 DOM 업데이트
+      animationFrameIdRef.current = requestAnimationFrame(updatePosition);
+    }
   }, []);
 
   /**
@@ -164,6 +183,12 @@ const DraggableBottomSheet = ({
 
     window.removeEventListener('touchmove', throttledTouchMove);
     window.removeEventListener('touchend', handleTouchEnd);
+
+    // 애니메이션 프레임 취소
+    if (animationFrameIdRef.current) {
+      cancelAnimationFrame(animationFrameIdRef.current);
+      animationFrameIdRef.current = null;
+    }
   }, []);
 
   /**
