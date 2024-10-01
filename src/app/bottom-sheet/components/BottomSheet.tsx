@@ -44,6 +44,21 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
     };
   }, [open]);
 
+  // 전역적으로 touchmove 이벤트에서 새로고침 방지
+  useEffect(() => {
+    const preventDefault = (event: TouchEvent) => {
+      event.preventDefault();
+    };
+
+    if (open) {
+      window.addEventListener('touchmove', preventDefault, { passive: false });
+    }
+
+    return () => {
+      window.removeEventListener('touchmove', preventDefault);
+    };
+  }, [open]);
+
   /**
    * 마우스 이동에 따라 top 업데이트 (desktop)
    */
@@ -168,7 +183,7 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
         style={{
           animation: containerAnimation,
           top,
-          transition: 'top 0.3s ease-out',
+          transition: 'top 0.08s linear',
         }}
       >
         {/* Draggable Button */}
