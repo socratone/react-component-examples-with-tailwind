@@ -7,6 +7,10 @@ export default function Home() {
       <Link href="/menu">Menu</Link>
       <Link href="/modal">Modal</Link>
       <Link href="/bottom-sheet">Bottom Sheet</Link>
+      <Link href="/inset-viewport-full-height">Inset Viewport Full Height</Link>
+      <Link href="/inset-viewport-full-height-flex">
+        Inset Viewport Full Height Flex
+      </Link>
     </main>
   );
 }
