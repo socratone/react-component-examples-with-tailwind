@@ -9,12 +9,14 @@ interface MultiSelectProps {
   options: Option[];
   values: Option[];
   onChange: (values: Option[]) => void;
+  maxWidth?: string;
 }
 
 export default function MultiSelect({
   options,
   values,
   onChange,
+  maxWidth,
 }: MultiSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -47,13 +49,13 @@ export default function MultiSelect({
   }, []);
 
   return (
-    <div className="relative w-64" ref={dropdownRef}>
+    <div className="relative" ref={dropdownRef} style={{ maxWidth }}>
       <button
         type="button"
         className="border border-gray-300 rounded-md p-2 w-full text-left cursor-pointer bg-white flex justify-between items-center"
         onClick={() => setIsOpen((prev) => !prev)}
       >
-        <span>
+        <span className="truncate" style={{ maxWidth: 'calc(100% - 24px)' }}>
           {values.length > 0
             ? `${values
                 .slice(0, 2)
@@ -75,7 +77,9 @@ export default function MultiSelect({
               }`}
               onClick={() => toggleOption(option)}
             >
-              <span>{option.label}</span>
+              <span className="truncate" style={{ maxWidth: '90%' }}>
+                {option.label}
+              </span>
               <div className="ml-2">{isSelected(option) && <div>v</div>}</div>
             </div>
           ))}
