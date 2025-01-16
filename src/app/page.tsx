@@ -13,6 +13,7 @@ export default function Home() {
         Inset Viewport Full Height Flex
       </Link>
       <Link href="/blur-gradient">Blur Gradient</Link>
+      <Link href="/rich-editor">Rich Editor</Link>
     </main>
   );
 }

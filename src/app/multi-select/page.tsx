@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import MultiSelect from './MultiSelect';
-import Polygon from './polygon.svg';
 
 const Page = () => {
   const [values, setValues] = useState<{ value: string; label: string }[]>([]);
