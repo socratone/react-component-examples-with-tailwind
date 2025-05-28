@@ -1,7 +1,7 @@
 'use client';
 
-import useScrollDownSnap from '../../../hooks/useScrollDownSnap';
-import useViewportHeightScrollOpacity from '../../../hooks/useViewportHeightScrollOpacity';
+import useScrollDownSnap from './hooks/useScrollDownSnap';
+import useViewportHeightScrollOpacity from './hooks/useViewportHeightScrollOpacity';
 import { applyEaseOut } from './utils';
 import { useRef } from 'react';
 
