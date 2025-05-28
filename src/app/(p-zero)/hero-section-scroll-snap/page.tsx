@@ -2,30 +2,47 @@
 
 import { useRef } from 'react';
 import useScrollDownSnap from './useScrollDownSnap';
+import useViewportHeightScrollOpacity from './useViewportHeightScrollOpacity';
+
 const Page = () => {
   // 스크롤 스냅을 적용할 섹션에 대한 ref 생성
   const snapSectionRef = useRef<HTMLElement>(null);
+
+  // viewport height를 기준으로 스크롤 위치에 따른 opacity 값 계산
+  const opacity = useViewportHeightScrollOpacity();
 
   useScrollDownSnap(snapSectionRef);
 
   return (
     <>
-      {/* full height section */}
-      <section className="h-screen bg-blue-200 border-blue-500 border-[20px]">
-        <img
-          src="https://picsum.photos/500"
-          className="size-full object-cover"
-        />
-      </section>
-      {/* snap section - ref 추가 */}
-      <section
-        ref={snapSectionRef}
-        className="h-[300px] bg-yellow-200 border-yellow-500 border-[20px]"
+      <div
+        className="fixed inset-0 z-20"
+        style={{ opacity, pointerEvents: opacity === 0 ? 'none' : 'auto' }}
       >
         <img
           src="https://picsum.photos/500"
           className="size-full object-cover"
         />
+      </div>
+      {/* bumper height section */}
+      <section className="relative h-screen" />
+      {/* snap section */}
+      <section ref={snapSectionRef} className="h-[300px] relative">
+        {/* 위쪽은 흰색, 아래쪽은 투명한 그라디언트 추가 */}
+        <div
+          className="absolute inset-x-0 top-0 h-full z-10 pointer-events-none duration-300 ease-in-out"
+          style={{
+            background: 'linear-gradient(to bottom, white, transparent)',
+            opacity: opacity === 0 ? 0 : 1,
+          }}
+        />
+        <img
+          src="https://picsum.photos/500"
+          className="size-full object-cover"
+        />
+        <button className="bg-gray-300 p-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          클릭
+        </button>
       </section>
       <section className="h-screen bg-green-200 border-green-500 border-[20px] flex items-center justify-center text-4xl"></section>
     </>
