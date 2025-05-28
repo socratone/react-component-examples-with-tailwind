@@ -14,6 +14,7 @@ export default function Home() {
       </Link>
       <Link href="/blur-gradient">Blur Gradient</Link>
       <Link href="/rich-editor">Rich Editor</Link>
+      <Link href="/hero-section-scroll-snap">Hero Section Scroll Snap</Link>
     </main>
   );
 }
