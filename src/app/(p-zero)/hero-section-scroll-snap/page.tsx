@@ -1,8 +1,10 @@
 'use client';
 
+import useScrollDownSnap from '@/hooks/useScrollDownSnap';
+import useViewportHeightScrollOpacity from '@/hooks/useViewportHeightScrollOpacity';
 import { useRef } from 'react';
-import useScrollDownSnap from './useScrollDownSnap';
-import useViewportHeightScrollOpacity from './useViewportHeightScrollOpacity';
+
+const GRADIENT_RATION = 3000;
 
 const Page = () => {
   // 스크롤 스냅을 적용할 섹션에 대한 ref 생성
@@ -14,13 +16,16 @@ const Page = () => {
   useScrollDownSnap(snapSectionRef);
 
   return (
-    <>
+    <div className="bg-black">
       <div
         className="fixed inset-0 z-20"
         style={{ opacity, pointerEvents: opacity === 0 ? 'none' : 'auto' }}
       >
-        <img
-          src="https://picsum.photos/500"
+        <video
+          src="https://www.sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4"
+          autoPlay
+          loop
+          muted
           className="size-full object-cover"
         />
       </div>
@@ -30,14 +35,17 @@ const Page = () => {
       <section ref={snapSectionRef} className="h-[300px] relative">
         {/* 위쪽은 흰색, 아래쪽은 투명한 그라디언트 추가 */}
         <div
-          className="absolute inset-x-0 top-0 h-full z-10 pointer-events-none duration-300 ease-in-out"
+          className="absolute inset-x-0 top-0 z-10 pointer-events-none"
           style={{
-            background: 'linear-gradient(to bottom, white, transparent)',
-            opacity: opacity === 0 ? 0 : 1,
+            height: opacity * GRADIENT_RATION,
+            background: 'linear-gradient(to bottom, black, transparent)',
           }}
         />
-        <img
-          src="https://picsum.photos/500"
+        <video
+          src="https://www.sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4"
+          autoPlay
+          loop
+          muted
           className="size-full object-cover"
         />
         <button className="bg-gray-300 p-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -45,7 +53,7 @@ const Page = () => {
         </button>
       </section>
       <section className="h-screen bg-green-200 border-green-500 border-[20px] flex items-center justify-center text-4xl"></section>
-    </>
+    </div>
   );
 };
 
