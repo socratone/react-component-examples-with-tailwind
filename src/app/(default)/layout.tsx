@@ -1,3 +1,4 @@
+import Providers from '../providers';
 import './globals.css';
 
 export default function RootLayout({
@@ -7,7 +8,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className="p-8">{children}</body>
+      <body className="p-8">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
