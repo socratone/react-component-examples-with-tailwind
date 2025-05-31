@@ -21,6 +21,14 @@ interface InfiniteListProps<TData extends { id?: string | number }> {
    */
   renderItem: (item: TData, index: number) => ReactNode;
   /**
+   * 각 아이템의 고유 키를 생성하는 함수
+   * 제공되지 않을 경우 기본적으로 item.id 또는 index를 사용
+   * @param item - 키를 생성할 아이템 데이터
+   * @param index - 아이템의 인덱스
+   * @returns string | number - 고유 키 값
+   */
+  getItemKey?: (item: TData, index: number) => string | number;
+  /**
    * 한 페이지에 표시할 아이템 수
    * @default 20
    */
@@ -42,6 +50,7 @@ const InfiniteList = <TData extends { id?: string | number }>({
   queryKey,
   queryFn,
   renderItem,
+  getItemKey,
   pageSize = 20,
   scrollContainerRef,
   scrollContainer,
@@ -103,7 +112,7 @@ const InfiniteList = <TData extends { id?: string | number }>({
     <div className={className}>
       {/* 모든 페이지의 데이터를 flat()으로 평탄화하여 렌더링 */}
       {data?.pages.flat().map((item: TData, index: number) => (
-        <React.Fragment key={item.id === undefined ? index : item.id}>
+        <React.Fragment key={getItemKey ? getItemKey(item, index) : (item.id === undefined ? index : item.id)}>
           {renderItem(item, index)}
         </React.Fragment>
       ))}

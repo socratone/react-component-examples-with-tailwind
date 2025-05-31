@@ -57,6 +57,7 @@ const Page = () => {
             </div>
           )}
           scrollContainerRef={scrollContainerRef}
+          getItemKey={(item) => item.id}
         />
       </div>
     </div>
