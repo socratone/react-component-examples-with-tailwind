@@ -29,7 +29,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     // URL에서 searchParams 객체 가져오기
     const searchParams = request.nextUrl.searchParams;
-    
+
     // offset과 size 쿼리 파라미터 추출
     const offset = parseInt(searchParams.get('offset') || '0');
     const size = parseInt(searchParams.get('size') || '10');
