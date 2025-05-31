@@ -27,7 +27,7 @@ interface InfiniteListProps<TData extends { id?: string | number }> {
    * @param index - 아이템의 인덱스
    * @returns string | number - 고유 키 값
    */
-  getItemKey?: (item: TData, index: number) => string | number;
+  getItemKey: (item: TData, index: number) => string | number;
   /**
    * 한 페이지에 표시할 아이템 수
    * @default 20
@@ -43,6 +43,16 @@ interface InfiniteListProps<TData extends { id?: string | number }> {
    * scrollContainerRef와 함께 사용될 경우 scrollContainer가 우선순위를 가짐
    */
   scrollContainer?: HTMLElement;
+  /**
+   * 로딩 상태를 표시하는 컴포넌트
+   * @default <div className="p-4 text-center">데이터를 불러오는 중...</div>
+   */
+  loadingComponent?: ReactNode;
+  /**
+   * 추가 데이터 로딩 상태를 표시하는 컴포넌트
+   * @default <div className="p-4 text-center">추가 데이터를 불러오는 중...</div>
+   */
+  fetchingNextPageComponent?: ReactNode;
   className?: string;
 }
 
@@ -54,6 +64,8 @@ const InfiniteList = <TData extends { id?: string | number }>({
   pageSize = 20,
   scrollContainerRef,
   scrollContainer,
+  loadingComponent,
+  fetchingNextPageComponent,
   className,
 }: InfiniteListProps<TData>) => {
   // 마지막 요소를 감지하기 위한 ref
@@ -93,8 +105,8 @@ const InfiniteList = <TData extends { id?: string | number }>({
       {
         // scrollContainer가 있으면 우선 사용하고, 없으면 scrollContainerRef 사용
         root: scrollContainer ?? scrollContainerRef?.current ?? null,
-        // rootMargin을 사용하여 요소가 화면 하단에서 400px 전에 미리 로드하도록 설정
-        rootMargin: '0px 0px 400px 0px',
+        // rootMargin을 사용하여 요소가 화면 하단에서 1000px 전에 미리 로드하도록 설정
+        rootMargin: '0px 0px 1000px 0px',
         threshold: 0, // 요소가 조금이라도 보이면 즉시 콜백 실행
       }
     );
@@ -112,20 +124,22 @@ const InfiniteList = <TData extends { id?: string | number }>({
     <div className={className}>
       {/* 모든 페이지의 데이터를 flat()으로 평탄화하여 렌더링 */}
       {data?.pages.flat().map((item: TData, index: number) => (
-        <React.Fragment key={getItemKey ? getItemKey(item, index) : (item.id === undefined ? index : item.id)}>
+        <React.Fragment key={getItemKey(item, index)}>
           {renderItem(item, index)}
         </React.Fragment>
       ))}
 
       {/* 로딩 상태 표시 */}
-      {isLoading && (
-        <div className="p-4 text-center">데이터를 불러오는 중...</div>
-      )}
+      {isLoading &&
+        (loadingComponent || (
+          <div className="p-4 text-center">데이터를 불러오는 중...</div>
+        ))}
 
       {/* 다음 페이지 로딩 상태 표시 */}
-      {isFetchingNextPage && (
-        <div className="p-4 text-center">추가 데이터를 불러오는 중...</div>
-      )}
+      {isFetchingNextPage &&
+        (fetchingNextPageComponent || (
+          <div className="p-4 text-center">추가 데이터를 불러오는 중...</div>
+        ))}
 
       {/* 에러 상태 표시 */}
       {isError && (

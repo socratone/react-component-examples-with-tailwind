@@ -58,6 +58,11 @@ const Page = () => {
           )}
           scrollContainerRef={scrollContainerRef}
           getItemKey={(item) => item.id}
+          loadingComponent={
+            <div className="h-[10vh] flex items-center justify-center">
+              기다려봐!
+            </div>
+          }
         />
       </div>
     </div>
