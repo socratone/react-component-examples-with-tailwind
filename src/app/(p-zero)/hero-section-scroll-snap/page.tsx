@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from '@/utils/cn';
 import useScrollDownSnap from './hooks/useScrollDownSnap';
 import useViewportHeightScrollOpacity from './hooks/useViewportHeightScrollOpacity';
 import { applyEaseOut } from './utils';
@@ -19,11 +20,13 @@ const Page = () => {
 
   useScrollDownSnap(snapSectionRef);
 
+  const isVisible = opacity < 0.05;
+
   return (
-    <div className="bg-gray-600" style={{ background: BG_COLOR }}>
+    <div>
       <div
-        className="fixed inset-0 z-20"
-        style={{ opacity, pointerEvents: opacity < 0.05 ? 'none' : 'auto' }}
+        className="fixed inset-0 -z-10"
+        style={{ opacity, display: isVisible ? 'none' : 'block' }}
       >
         <video
           src="https://www.sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4"
@@ -34,12 +37,20 @@ const Page = () => {
         />
       </div>
       {/* bumper height section */}
-      <section className="relative h-screen" />
+      <section
+        className="relative h-screen -z-20"
+        style={{ background: BG_COLOR }}
+      />
       {/* snap section */}
-      <section ref={snapSectionRef} className="h-[300px] relative">
+      <section
+        ref={snapSectionRef}
+        className={cn('h-[300px] relative -z-30', {
+          'z-0': isVisible,
+        })}
+      >
         {/* 위쪽은 흰색, 아래쪽은 투명한 그라디언트 추가 */}
         <div
-          className="absolute inset-x-0 top-0 z-10 pointer-events-none"
+          className="absolute inset-x-0 top-0 z-10"
           style={{
             height: linearOpacity * GRADIENT_RATION, // 여기서는 선형 값을 사용 (그라디언트 높이 계산용)
             background: `linear-gradient(to bottom, ${BG_COLOR}, transparent)`,
@@ -56,7 +67,45 @@ const Page = () => {
           클릭
         </button>
       </section>
-      <section className="h-screen bg-green-200 border-green-500 border-[20px] flex items-center justify-center text-4xl"></section>
+      <section
+        className={cn(
+          'bg-green-100 p-5 flex flex-col items-center justify-center text-2xl -z-30 relative',
+          {
+            'z-0': isVisible,
+          }
+        )}
+      >
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero
+          nesciunt, quae at facilis perferendis quo illum quam inventore nobis
+          accusantium incidunt aspernatur esse! Laboriosam voluptate eligendi
+          doloribus molestias dolorem. Nemo.
+        </p>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero
+          nesciunt, quae at facilis perferendis quo illum quam inventore nobis
+          accusantium incidunt aspernatur esse! Laboriosam voluptate eligendi
+          doloribus molestias dolorem. Nemo.
+        </p>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero
+          nesciunt, quae at facilis perferendis quo illum quam inventore nobis
+          accusantium incidunt aspernatur esse! Laboriosam voluptate eligendi
+          doloribus molestias dolorem. Nemo.
+        </p>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero
+          nesciunt, quae at facilis perferendis quo illum quam inventore nobis
+          accusantium incidunt aspernatur esse! Laboriosam voluptate eligendi
+          doloribus molestias dolorem. Nemo.
+        </p>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero
+          nesciunt, quae at facilis perferendis quo illum quam inventore nobis
+          accusantium incidunt aspernatur esse! Laboriosam voluptate eligendi
+          doloribus molestias dolorem. Nemo.
+        </p>
+      </section>
     </div>
   );
 };
