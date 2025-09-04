@@ -16,6 +16,7 @@ export default function Home() {
       <Link href="/rich-editor">Rich Editor</Link>
       <Link href="/hero-section-scroll-snap">Hero Section Scroll Snap</Link>
       <Link href="/infinite-scroll">Infinite Scroll</Link>
+      <Link href="/scroll-slider">Scroll Slider</Link>
     </main>
   );
 }
