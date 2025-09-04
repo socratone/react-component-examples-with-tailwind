@@ -30,7 +30,7 @@ const ScrollSlider = ({
 
     let animationId: number;
     const speed = 1; // 스크롤 속도 (픽셀/프레임)
-    const patternWidth = itemWidth * itemCount; // 반복 패턴의 너비 (1-10 아이템 = 10 * 100px)
+    const patternWidth = itemWidth * itemCount; // 반복 패턴의 너비
     const lowerBoundary = itemWidth * itemCount; // 하한선
     const upperBoundary = itemWidth * itemCount * 2; // 상한선
 

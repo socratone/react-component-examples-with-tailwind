@@ -12,7 +12,7 @@ const Page = () => {
         {items.map((item) => (
           <div
             key={item}
-            className="w-[100px] h-64 border-8 shrink-0 flex items-center justify-center text-black text-xl font-bold"
+            className="w-[100px] h-[160px] border-8 shrink-0 flex items-center justify-center text-black text-xl font-bold"
           >
             {item}
           </div>
