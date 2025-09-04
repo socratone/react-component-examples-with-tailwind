@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface ScrollSliderProps {
   itemWidth: number;
@@ -13,12 +13,20 @@ const ScrollSlider = ({
 }: ScrollSliderProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const [isPaused, setIsPaused] = useState(false);
+
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-
     // 초기 스크롤 위치를 아이템 너비 * 아이템 개수로 설정
     container.scrollLeft = itemWidth * itemCount;
+  }, []);
+
+  useEffect(() => {
+    if (isPaused) return;
+
+    const container = containerRef.current;
+    if (!container) return;
 
     let animationId: number;
     const speed = 1; // 스크롤 속도 (픽셀/프레임)
@@ -50,13 +58,17 @@ const ScrollSlider = ({
         cancelAnimationFrame(animationId);
       }
     };
-  }, []);
+  }, [isPaused]);
 
   return (
     <div
       ref={containerRef}
       className="overflow-x-auto"
       style={{ scrollbarWidth: 'none' }}
+      onMouseDown={() => setIsPaused(true)}
+      onMouseUp={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => setIsPaused(false)}
     >
       <div className="flex">
         {children}
