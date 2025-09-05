@@ -68,6 +68,7 @@ const ScrollSlider = ({
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={() => setIsPaused(true)}
+      // TODO: ios에서는 터치 엔드가 바로 호출되어시인지 긴 스크롤 이동이 안 됨
       onTouchEnd={() => setIsPaused(false)}
     >
       <div className="flex">
