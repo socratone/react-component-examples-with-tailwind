@@ -20,7 +20,7 @@ const ScrollSlider = ({
     if (!container) return;
     // 초기 스크롤 위치를 아이템 너비 * 아이템 개수로 설정
     container.scrollLeft = itemWidth * itemCount;
-  }, []);
+  }, [itemCount, itemWidth]);
 
   useEffect(() => {
     if (isPaused) return;
@@ -58,15 +58,15 @@ const ScrollSlider = ({
         cancelAnimationFrame(animationId);
       }
     };
-  }, [isPaused]);
+  }, [isPaused, itemWidth, itemCount]);
 
   return (
     <div
       ref={containerRef}
       className="overflow-x-auto"
       style={{ scrollbarWidth: 'none' }}
-      onMouseDown={() => setIsPaused(true)}
-      onMouseUp={() => setIsPaused(false)}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
       onTouchStart={() => setIsPaused(true)}
       onTouchEnd={() => setIsPaused(false)}
     >
